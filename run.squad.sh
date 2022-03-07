@@ -1,0 +1,20 @@
+python -u run_squad.py \
+--vocab_file=./bert/cased_L-12_H-768_A-12/vocab.txt \
+--bert_config_file=./bert/cased_L-12_H-768_A-12/bert_config.json \
+--init_checkpoint=./bert/cased_L-12_H-768_A-12/bert_model.ckpt \
+--do_train=True \
+--train_file=./squad/train-v1.1.json \
+--do_predict=True \
+--predict_file=./squad/dev-v1.1.json \
+--train_batch_size=64 \
+--predict_batch_size=32 \
+--num_train_epochs=3.0 \
+--max_seq_length=512 \
+--doc_stride=128 \
+--learning_rate=3e-5 \
+--version_2_with_negative=False \
+--output_dir=./path-to-output-dir \
+--do_lower_case=False \
+--use_tpu=True \
+--tpu_name="your-tpu-name" \
+--tpu_zone="your-tpu-zone"

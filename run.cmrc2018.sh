@@ -1,0 +1,19 @@
+python -u run_squad_fix.py \
+--vocab_file=./bert/chinese_L-12_H-768_A-12/vocab.txt \
+--bert_config_file=./bert/chinese_L-12_H-768_A-12/bert_config.json \
+--init_checkpoint=./bert/chinese_L-12_H-768_A-12/bert_model.ckpt \
+--do_train=True \
+--train_file=./cmrc2018/cmrc2018_train.json \
+--do_predict=True \
+--predict_file=./cmrc2018/cmrc2018_dev.json \
+--train_batch_size=64 \
+--predict_batch_size=32 \
+--num_train_epochs=2 \
+--max_seq_length=512 \
+--doc_stride=128 \
+--learning_rate=3e-5 \
+--do_lower_case=True \
+--output_dir=./path-to-output-dir \
+--use_tpu=True \
+--tpu_name="your-tpu-name" \
+--tpu_zone="your-tpu-zone"
