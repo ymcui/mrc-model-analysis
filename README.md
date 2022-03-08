@@ -45,7 +45,7 @@ python -u run_squad.py \
 ### How to run CMRC 2018 baseline (TPU)
 Run the following script (`run.cmrc2018.sh`):
 ```
-python -u run_squad_fix.py \
+python -u run_cmrc2018.py \
 --vocab_file=./bert/chinese_L-12_H-768_A-12/vocab.txt \
 --bert_config_file=./bert/chinese_L-12_H-768_A-12/bert_config.json \
 --init_checkpoint=./bert/chinese_L-12_H-768_A-12/bert_model.ckpt \
