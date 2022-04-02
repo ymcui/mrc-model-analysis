@@ -378,7 +378,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       for token in query_tokens:
         tokens.append(token)
         segment_ids.append(0)
-        if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2":
+        if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2" or FLAGS.mask_zone is None:
           att_mask.append(0)
         if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2":
           att_mask.append(1)
@@ -397,7 +397,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         segment_ids.append(1)
         if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2":
           att_mask.append(1)
-        if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2":
+        if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2" or FLAGS.mask_zone is None:
           att_mask.append(0)
       tokens.append("[SEP]")
       segment_ids.append(1)
@@ -444,7 +444,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         start_position = 0
         end_position = 0
 
-      if example_index < 20:
+      if example_index < 2:
         tf.logging.info("*** Example ***")
         tf.logging.info("unique_id: %s" % (unique_id))
         tf.logging.info("example_index: %s" % (example_index))
@@ -624,6 +624,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     input_mask = features["input_mask"]
     segment_ids = features["segment_ids"]
     att_mask = features["att_mask"]
+
+    if FLAGS.mask_zone is None:
+      att_mask = None
 
     is_training = (mode == tf.estimator.ModeKeys.TRAIN)
 
