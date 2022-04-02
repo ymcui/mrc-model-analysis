@@ -1,12 +1,17 @@
 # MRC-Model-Analysis
-This repository contains source code for our paper "Multilingual Multi-Aspect Explainability Analyses on Machine Reading Comprehension Models".
+This repository contains source code for our paper "Multilingual Multi-Aspect Explainability Analyses on Machine Reading Comprehension Models" (formerly "Understanding Attention in Machine Reading Comprehension. https://arxiv.org/abs/2108.11574v1").
 
 - [**Multilingual Multi-Aspect Explainability Analyses on Machine Reading Comprehension Models**](https://www.cell.com/iscience/fulltext/S2589-0042(22)00446-1)
   - Yiming Cui, Wei-Nan Zhang, Wanxiang Che, Ting Liu, Zhigang Chen, Shijin Wang
-  - Published in *iScinece*
+  - Published in *iScience*
 
-*The repository is under construction.*
+***The repository is under construction.***
 
+<p align="center">
+    <br>
+    <img src="./pics/graph_abs.png" width="90%"/>
+    <br>
+</p>
 ## Requirements
 ```
 Python 3.7.3
