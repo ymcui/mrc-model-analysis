@@ -139,8 +139,10 @@ If your find our work helpful, please consider cite our paper.
       journal = {iScience},
       volume = {25},
       number = {4},
+      pages = {104176},
       year = {2022},
       issn = {2589-0042},
       doi = {https://doi.org/10.1016/j.isci.2022.104176},
+      url = {https://www.sciencedirect.com/science/article/pii/S2589004222004461},
 }
 ```
