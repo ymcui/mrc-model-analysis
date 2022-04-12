@@ -133,12 +133,12 @@ TBA
 If your find our work helpful, please consider cite our paper.
 
 ```bibtex
-@article{cui-etal-2022-iscience,
+@article{cui-etal-2022-mrc,
       title = {Multilingual Multi-Aspect Explainability Analyses on Machine Reading Comprehension Models},
       author = {Cui, Yiming and Zhang, Wei-Nan and Che, Wanxiang and Liu, Ting and Chen, Zhigang and Wang, Shijin},
       journal = {iScience},
       volume = {25},
-      number = {4},
+      number = {5},
       pages = {104176},
       year = {2022},
       issn = {2589-0042},
