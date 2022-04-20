@@ -31,8 +31,7 @@ import tensorflow as tf
 import numpy
 import pdb
 import sys
-#reload(sys)
-#sys.setdefaultencoding('utf-8')
+
 from tqdm import tqdm
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
@@ -158,11 +157,13 @@ flags.DEFINE_bool(
     "If true, all of the warnings related to data processing will be printed. "
     "A number of warnings are expected for a normal SQuAD evaluation.")
 
-tf.flags.DEFINE_string("mask_zone", None, "specify which attention zone should be masked.")
+tf.flags.DEFINE_string("mask_zone", None, "specify which attention zone should be masked. e.g., q2, q2p, p2q, p2, all")
+flags.DEFINE_integer("mask_layer", None, "specify wich layer should be masked. starts from 0. if None is set, all layers will be masked.")
 
 # set random seed (i don't know whether it works or not)
 numpy.random.seed(int(FLAGS.rand_seed))
 tf.set_random_seed(int(FLAGS.rand_seed))
+
 
 #
 class SquadExample(object):
@@ -454,7 +455,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         tokens.append(token)
         segment_ids.append(0)
         input_span_mask.append(0)
-        if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2":
+        if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2" or FLAGS.mask_zone is None or FLAGS.mask_zone == "all":
           att_mask.append(0)
         if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2":
           att_mask.append(1)
@@ -475,7 +476,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         input_span_mask.append(1)
         if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2":
           att_mask.append(1)
-        if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2":
+        if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2" or FLAGS.mask_zone is None or FLAGS.mask_zone == "all":
           att_mask.append(0)
       tokens.append("[SEP]")
       segment_ids.append(1)
@@ -657,9 +658,10 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids, i
       input_ids=input_ids,
       input_mask=input_mask,
       token_type_ids=segment_ids,
-      att_mask=att_mask,
-      use_one_hot_embeddings=use_one_hot_embeddings)
-
+      use_one_hot_embeddings=use_one_hot_embeddings,
+      mask_zone=FLAGS.mask_zone,
+      mask_layer=FLAGS.mask_layer,
+      att_mask=att_mask)
 
   final_hidden = model.get_sequence_output()
 
@@ -713,6 +715,9 @@ def model_fn_builder(bert_config, init_checkpoint, learning_rate,
     segment_ids = features["segment_ids"]
     input_span_mask = features["input_span_mask"]
     att_mask = features["att_mask"]
+
+    if FLAGS.mask_zone is None:
+      att_mask = None
 
     is_training = (mode == tf.estimator.ModeKeys.TRAIN)
 
@@ -1348,11 +1353,16 @@ def main(_):
               start_logits=start_logits,
               end_logits=end_logits))
 
-    output_json_name = "dev_predictions.json"
-    output_nbest_name = "dev_nbest_predictions.json"
-
-    output_prediction_file = os.path.join(FLAGS.output_dir, output_json_name)
-    output_nbest_file = os.path.join(FLAGS.output_dir, output_nbest_name)
+    if FLAGS.mask_layer is None:
+      mask_layer_name = ""
+    else:
+      mask_layer_name = FLAGS.mask_layer
+    if FLAGS.mask_zone is None:
+      mask_zone_name = ""
+    else:
+      mask_zone_name = FLAGS.mask_zone
+    output_prediction_file = os.path.join(FLAGS.output_dir, "predictions_"+"layer"+str(mask_layer_name)+"_"+str(mask_zone_name)+".json")
+    output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
 
     write_predictions(eval_examples, eval_features, all_results,
                       FLAGS.n_best_size, FLAGS.max_answer_length,

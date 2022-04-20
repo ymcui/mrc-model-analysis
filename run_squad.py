@@ -153,7 +153,8 @@ flags.DEFINE_float(
     "null_score_diff_threshold", 0.0,
     "If null_score - best_non_null is greater than the threshold predict null.")
 
-tf.flags.DEFINE_string("mask_zone", None, "specify which attention zone should be masked.")
+tf.flags.DEFINE_string("mask_zone", None, "specify which attention zone should be masked. e.g., q2, q2p, p2q, p2, all")
+flags.DEFINE_integer("mask_layer", None, "specify wich layer should be masked. starts from 0. if None is set, all layers will be masked.")
 
 class SquadExample(object):
   """A single training/test example for simple sequence classification.
@@ -378,7 +379,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       for token in query_tokens:
         tokens.append(token)
         segment_ids.append(0)
-        if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2" or FLAGS.mask_zone is None:
+        if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2" or FLAGS.mask_zone is None or FLAGS.mask_zone == "all":
           att_mask.append(0)
         if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2":
           att_mask.append(1)
@@ -397,7 +398,7 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
         segment_ids.append(1)
         if FLAGS.mask_zone == "q2p" or FLAGS.mask_zone == "p2":
           att_mask.append(1)
-        if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2" or FLAGS.mask_zone is None:
+        if FLAGS.mask_zone == "p2q" or FLAGS.mask_zone == "q2" or FLAGS.mask_zone is None or FLAGS.mask_zone == "all":
           att_mask.append(0)
       tokens.append("[SEP]")
       segment_ids.append(1)
@@ -576,6 +577,7 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids, a
       token_type_ids=segment_ids,
       use_one_hot_embeddings=use_one_hot_embeddings,
       mask_zone=FLAGS.mask_zone,
+      mask_layer=FLAGS.mask_layer,
       att_mask=att_mask)
 
   final_hidden = model.get_sequence_output()
@@ -995,7 +997,6 @@ def get_final_text(pred_text, orig_text, do_lower_case):
   tokenizer = tokenization.BasicTokenizer(do_lower_case=do_lower_case)
 
   tok_text = " ".join(tokenizer.tokenize(orig_text))
-
   start_position = tok_text.find(pred_text)
   if start_position == -1:
     if FLAGS.verbose_logging:
@@ -1292,7 +1293,15 @@ def main(_):
               start_logits=start_logits,
               end_logits=end_logits))
 
-    output_prediction_file = os.path.join(FLAGS.output_dir, "predictions.json")
+    if FLAGS.mask_layer is None:
+      mask_layer_name = ""
+    else:
+      mask_layer_name = FLAGS.mask_layer
+    if FLAGS.mask_zone is None:
+      mask_zone_name = ""
+    else:
+      mask_zone_name = FLAGS.mask_zone
+    output_prediction_file = os.path.join(FLAGS.output_dir, "predictions_"+"layer"+str(mask_layer_name)+"_"+str(mask_zone_name)+".json")
     output_nbest_file = os.path.join(FLAGS.output_dir, "nbest_predictions.json")
     output_null_log_odds_file = os.path.join(FLAGS.output_dir, "null_odds.json")
 

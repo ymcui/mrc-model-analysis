@@ -26,7 +26,7 @@ import re
 import numpy as np
 import six
 import tensorflow as tf
-
+import pdb
 
 class BertConfig(object):
   """Configuration for `BertModel`."""
@@ -133,10 +133,11 @@ class BertModel(object):
                is_training,
                input_ids,
                input_mask=None,
-               token_type_ids=None,
-               use_one_hot_embeddings=False,
+	             token_type_ids=None,
+               att_mask=None,
                mask_zone=None,
-               att_mask=None
+               mask_layer=None,
+	             use_one_hot_embeddings=False,
                scope=None):
     """Constructor for BertModel.
 
@@ -216,7 +217,9 @@ class BertModel(object):
             attention_probs_dropout_prob=config.attention_probs_dropout_prob,
             initializer_range=config.initializer_range,
             mask_zone=mask_zone,
+            mask_layer=mask_layer,
             att_mask=att_mask,
+            input_mask=input_mask,
             do_return_all_layers=True)
 
       self.sequence_output = self.all_encoder_layers[-1]
@@ -574,6 +577,9 @@ def attention_layer(from_tensor,
                     from_seq_length=None,
                     to_seq_length=None,
                     mask_zone=None,
+                    mask_layer=None,
+                    layer_idx=None,
+                    input_mask=None,
                     att_mask=None):
   """Performs multi-headed attention from `from_tensor` to `to_tensor`.
 
@@ -709,7 +715,9 @@ def attention_layer(from_tensor,
                                  1.0 / math.sqrt(float(size_per_head)))
 
   # mask attention zones
-  if mask_zone is not None:
+  mask_flag = (mask_zone is not None) and ((int(mask_layer) == int(layer_idx)) or mask_layer is None)
+  if mask_flag:
+    tf.logging.info("********** Masking layer {} in {} zone **********".format(mask_layer, mask_zone))
     broadcast_ones = tf.ones(shape=[batch_size, from_seq_length, 1], dtype=tf.float32)
     to_mask = tf.cast(tf.reshape(input_mask, [batch_size, 1, to_seq_length]), tf.float32)
     to_mask_b = tf.cast(tf.reshape(att_mask, [batch_size, 1, to_seq_length]), tf.float32)
@@ -724,7 +732,10 @@ def attention_layer(from_tensor,
     att_mask = tf.expand_dims(mask_c, axis=[1])
     attention_scores_masked = attention_scores * att_mask + (1 - att_mask) * -10000.0
 
-    top_k_val = -10000.0
+    if mask_zone == "all":
+      attention_scores_masked = attention_scores
+
+    top_k_val = -5000.0
     top_k_mask = tf.greater_equal(attention_scores_masked, top_k_val)
 
   if attention_mask is not None:
@@ -735,8 +746,11 @@ def attention_layer(from_tensor,
     # masked positions, this operation will create a tensor which is 0.0 for
     # positions we want to attend and -10000.0 for masked positions.
     adder = (1.0 - tf.cast(attention_mask, tf.float32)) * -10000.0
-    if mask_zone is not None:
-      adder += tf.cast(top_k_mask, tf.float32) * -10000.0
+    if mask_flag:
+      if mask_zone == "all":
+        adder = tf.cast(top_k_mask, tf.float32) * -10000.0
+      else:
+        adder += tf.cast(top_k_mask, tf.float32) * -10000.0
 
     # Since we are adding it to the raw scores before the softmax, this is
     # effectively the same as removing these entirely.
@@ -789,7 +803,9 @@ def transformer_model(input_tensor,
                       attention_probs_dropout_prob=0.1,
                       initializer_range=0.02,
                       mask_zone=None,
+                      mask_layer=None,
                       att_mask=None,
+                      input_mask=None,
                       do_return_all_layers=False):
   """Multi-headed, multi-layer Transformer from "Attention is All You Need".
 
@@ -872,7 +888,10 @@ def transformer_model(input_tensor,
               from_seq_length=seq_length,
               to_seq_length=seq_length,
               mask_zone=mask_zone,
-              att_mask=att_mask)
+              mask_layer=mask_layer,
+              att_mask=att_mask,
+              input_mask=input_mask,
+              layer_idx=layer_idx)
           attention_heads.append(attention_head)
 
         attention_output = None
@@ -1015,3 +1034,5 @@ def assert_rank(tensor, expected_rank, name=None):
         "For the tensor `%s` in scope `%s`, the actual rank "
         "`%d` (shape = %s) is not equal to the expected rank `%s`" %
         (name, scope_name, actual_rank, str(tensor.shape), str(expected_rank)))
+
+

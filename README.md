@@ -5,7 +5,7 @@ This repository contains source code for our paper "Multilingual Multi-Aspect Ex
   - Yiming Cui, Wei-Nan Zhang, Wanxiang Che, Ting Liu, Zhigang Chen, Shijin Wang
   - Published in *iScience*
 
-***The repository is under construction.***
+***The repository is under construction. We are working on a protocol with a step-by-step guide. Hopefully, it will be released in May.***
 
 <p align="center">
     <br>
@@ -17,7 +17,7 @@ This repository contains source code for our paper "Multilingual Multi-Aspect Ex
 ## Requirements
 ```
 Python 3.7.3
-TensorFlow 1.15
+TensorFlow 1.15.3
 ```
 
 Note:
@@ -113,20 +113,26 @@ python -u run_cmrc2018.py \
 
 ### How to mask attention zones 
 
-Simply pass an additional argument `--mask_zone` to `run_squad.py` or `run_cmrc2018.py` script. The followings are valid values for `--mask_zone`:
-- "no_q2": masking Q2 zone
-- "no_q2p": masking Q2P zone
-- "no_p2": masking P2 zone
-- "no_p2q": masking P2Q zone
+Simply pass an additional argument `--mask_zone` and `--mask_layer` to `run_squad.py` or `run_cmrc2018.py` script when decoding.
 
-Note: 
-- This will mask specified attention zone in **ALL layers**. If you want to mask a specific layer, please modify `attention_layer()` in `modeling.py` and pass layer number to this function.
-- By default, this will mask Top-10 values in that attention zone. If you wish to mask more values, please modify `mask_top_n` variable in `modeling.py -> attention_layer()`.
+#### `--mask_zone` argument
+
+The followings are valid values for `--mask_zone`:
+
+- "q2": masking Q2 zone
+- "q2p": masking Q2P zone
+- "p2q": masking P2Q zone
+- "p2": masking P2 zone
+- "all": masking all zones
+
+#### `--mask_layer` argument
+
+Specify which layer should be masked. The starting index is 0. For example, in BERT-base, the index for the first transformer layer is `0` and the last is `11`.
 
 
 ### Visualization 
 
-TBA
+TBA. Will release our full protocol in the near future, with a step-by-step guide.
 
 ## Citation
 
