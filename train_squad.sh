@@ -1,0 +1,24 @@
+GS_BUCKET=gs://your-bucket
+TPU_NAME=your-tpu-name
+TPU_ZONE=your-tpu-zone
+MODEL_OUTPUT_DIR=$GS_BUCKET/path-to-output-dir
+python -u run_squad.py \
+  --vocab_file=$GS_BUCKET/bert/cased_L-12_H-768_A-12/vocab.txt \
+  --bert_config_file=$GS_BUCKET/bert/cased_L-12_H-768_A-12/bert_config.json \
+  --init_checkpoint=$GS_BUCKET/bert/cased_L-12_H-768_A-12/bert_model.ckpt \
+  --do_train=True \
+  --train_file=./squad/train-v1.1.json \
+  --do_predict=True \
+  --predict_file=./squad/dev-v1.1.json \
+  --train_batch_size=64 \
+  --predict_batch_size=32 \
+  --num_train_epochs=3.0 \
+  --max_seq_length=512 \
+  --doc_stride=128 \
+  --learning_rate=3e-5 \
+  --version_2_with_negative=False \
+  --output_dir=$MODEL_OUTPUT_DIR \
+  --do_lower_case=False \
+  --use_tpu=True \
+  --tpu_name=$TPU_NAME \
+  --tpu_zone=$TPU_ZONE

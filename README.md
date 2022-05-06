@@ -5,14 +5,11 @@ This repository contains source code for our paper "Multilingual Multi-Aspect Ex
   - Yiming Cui, Wei-Nan Zhang, Wanxiang Che, Ting Liu, Zhigang Chen, Shijin Wang
   - Published in *iScience*
 
-***The repository is under construction. We are working on a protocol with a step-by-step guide. Hopefully, it will be released in May.***
-
 <p align="center">
     <br>
     <img src="./pics/graph_abs.png" width="90%"/>
     <br>
 </p>
-
 
 ## Requirements
 ```
@@ -26,13 +23,12 @@ Note:
 2. The script might also work under TensorFlow 1.13 ~ 1.15.
 
 ### How to run SQuAD baseline (TPU)
-Run the following script (`run.squad.sh`) with proper replacement of a few pre-defined variables.
+Run the following script (`train_squad.sh`) with proper replacement of a few pre-defined variables.
 ```bash
 GS_BUCKET=gs://your-bucket
 TPU_NAME=your-tpu-name
 TPU_ZONE=your-tpu-zone
 MODEL_OUTPUT_DIR=$GS_BUCKET/path-to-output-dir
-
 python -u run_squad.py \
   --vocab_file=$GS_BUCKET/bert/cased_L-12_H-768_A-12/vocab.txt \
   --bert_config_file=$GS_BUCKET/bert/cased_L-12_H-768_A-12/bert_config.json \
@@ -69,13 +65,12 @@ python -u run_squad.py \
 
 
 ### How to run CMRC 2018 baseline (TPU)
-Run the following script (`run.cmrc2018.sh`) with proper replacement of a few pre-defined variables.
+Run the following script (`train_cmrc2018.sh`) with proper replacement of a few pre-defined variables.
 ```bash
 GS_BUCKET=gs://your-bucket
 TPU_NAME=your-tpu-name
 TPU_ZONE=your-tpu-zone
 MODEL_OUTPUT_DIR=$GS_BUCKET/path-to-output-dir
-
 python -u run_cmrc2018.py \
   --vocab_file=$GS_BUCKET/bert/chinese_L-12_H-768_A-12/vocab.txt \
   --bert_config_file=$GS_BUCKET/bert/chinese_L-12_H-768_A-12/bert_config.json \
@@ -90,8 +85,8 @@ python -u run_cmrc2018.py \
   --max_seq_length=512 \
   --doc_stride=128 \
   --learning_rate=3e-5 \
-  --output_dir=$MODEL_OUTPUT_DIR \
   --do_lower_case=True \
+  --output_dir=$MODEL_OUTPUT_DIR \
   --use_tpu=True \
   --tpu_name=$TPU_NAME \
   --tpu_zone=$TPU_ZONE
@@ -132,7 +127,7 @@ Specify which layer should be masked. The starting index is 0. For example, in B
 
 ### Visualization 
 
-TBA. Will release our full protocol in the near future, with a step-by-step guide.
+We will release our full protocol in the near future, with a step-by-step guide.
 
 ## Citation
 
