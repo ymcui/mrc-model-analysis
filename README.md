@@ -147,3 +147,6 @@ If your find our work helpful, please consider cite our paper.
       url = {https://www.sciencedirect.com/science/article/pii/S2589004222004461},
 }
 ```
+
+## Zenodo Archive
+[![DOI](https://zenodo.org/badge/463023018.svg)](https://zenodo.org/badge/latestdoi/463023018)
