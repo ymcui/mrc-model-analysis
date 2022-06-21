@@ -3,7 +3,13 @@ This repository contains source code for our paper "Multilingual Multi-Aspect Ex
 
 - [**Multilingual Multi-Aspect Explainability Analyses on Machine Reading Comprehension Models**](https://www.cell.com/iscience/fulltext/S2589-0042(22)00446-1)
   - Yiming Cui, Wei-Nan Zhang, Wanxiang Che, Ting Liu, Zhigang Chen, Shijin Wang
-  - Published in *iScience*
+  - Published in *iScience*, Cell Press 
+
+**(new)** If you would like to know how to visualize attention zones, we have a step-by-step protocol for your perusal.
+
+- [**Visualizing attention zones in machine reading comprehension models**](https://star-protocols.cell.com/protocols/1736)
+  - Yiming Cui, Wei-Nan Zhang, Ting Liu
+  - Published in *STAR Protocols*, Cell Press
 
 <p align="center">
     <br>
@@ -125,9 +131,11 @@ The followings are valid values for `--mask_zone`:
 Specify which layer should be masked. The starting index is 0. For example, in BERT-base, the index for the first transformer layer is `0` and the last is `11`.
 
 
-### Visualization 
+### Visualization (new)
 
-We will release our full protocol in the near future, with a step-by-step guide.
+Please consult our detailed protocol that was published in STAR Protocols. The presented protocol provides a step-by-step guideline on how to visualize attention zones in machine reading comprehension models.
+
+See: [**Visualizing attention zones in machine reading comprehension models**](https://star-protocols.cell.com/protocols/1736)
 
 ## Citation
 
@@ -145,6 +153,21 @@ If your find our work helpful, please consider cite our paper.
       issn = {2589-0042},
       doi = {https://doi.org/10.1016/j.isci.2022.104176},
       url = {https://www.sciencedirect.com/science/article/pii/S2589004222004461},
+}
+```
+
+Also, if you find our step-by-step protocol useful, please cite the following paper.
+```
+@article{cui-2022-mrc-protocol,
+title = {Visualizing attention zones in machine reading comprehension models},
+journal = {STAR Protocols},
+volume = {3},
+number = {3},
+pages = {101481},
+year = {2022},
+issn = {2666-1667},
+doi = {https://doi.org/10.1016/j.xpro.2022.101481},
+author = {Yiming Cui and Wei-Nan Zhang and Ting Liu},
 }
 ```
 
