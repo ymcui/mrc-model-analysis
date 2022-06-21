@@ -137,6 +137,12 @@ Please consult our detailed protocol that was published in STAR Protocols. The p
 
 See: [**Visualizing attention zones in machine reading comprehension models**](https://star-protocols.cell.com/protocols/1736)
 
+<p align="center">
+    <br>
+    <img src="./pics/star_protocol.png" width="60%"/>
+    <br>
+</p>
+
 ## Citation
 
 If your find our work helpful, please consider cite our paper.
